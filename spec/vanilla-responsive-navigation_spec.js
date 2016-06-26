@@ -1,6 +1,6 @@
 /* eslint-disable max-len, one-var, require-jsdoc */
 const _  = require('lodash');
-const ResponsiveNavigationClass = require('../src/responsive_navigation');
+const ResponsiveNavigationClass = require('../src/vanilla-responsive-navigation');
 
 function createDropdown(li){
   let ul;
@@ -29,7 +29,7 @@ function createList(){
 
 function createListItems(ul, items = 3){
   let a, li;
-  let range = Array.from(new Array(items).keys());
+  let range = _.range(1, (items + 1));
 
   _.forEach(range, function(i){
     li = document.createElement('li');
