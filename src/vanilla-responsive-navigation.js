@@ -113,6 +113,7 @@ class ResponsiveNavigationClass{
 
   _getDropdownParentsMobile(){
     _.forEach(this.dropdownParents, function(dropdownParent){
+      console.log('balls', dropdownParent);
       /* eslint-disable max-len */
       this.dropdownParentsMobile.push(this._skipTextNodes(dropdownParent, 'firstChild'));
       /* eslint-enable */
