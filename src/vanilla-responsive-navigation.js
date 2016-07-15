@@ -60,10 +60,10 @@ class ResponsiveNavigationClass{
 
   _addDropdownHoverListener(dropdown){
     dropdown.addEventListener('mouseover'
-                             , this._setDropdownAriaHiddenDesktop.bind(this)
+                             , this._setDropdownAriaHiddenDesktop.bind(this, dropdown)
                              , false);
     dropdown.addEventListener('mouseout'
-                             , this._setDropdownAriaHiddenDesktop.bind(this)
+                             , this._setDropdownAriaHiddenDesktop.bind(this, dropdown)
                              , false);
   }
 
@@ -113,7 +113,6 @@ class ResponsiveNavigationClass{
 
   _getDropdownParentsMobile(){
     _.forEach(this.dropdownParents, function(dropdownParent){
-      console.log('balls', dropdownParent);
       /* eslint-disable max-len */
       this.dropdownParentsMobile.push(this._skipTextNodes(dropdownParent, 'firstChild'));
       /* eslint-enable */
@@ -146,7 +145,6 @@ class ResponsiveNavigationClass{
       className = dropdownParent.className;
 
       dropdownParent.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
-      // dropdownParent.className.replace(/(?:^|\s)open(?!\S)/g, '');
     });
 
     _.forEach(this.dropdownParents, function(dropdownParent){
@@ -162,16 +160,9 @@ class ResponsiveNavigationClass{
     /* eslint-enable */
   }
 
-  _setDropdownAriaHiddenDesktop(e){
+  _setDropdownAriaHiddenDesktop(dropdown, e){
     if (!this._deviceCheck()){
-      let ul
-          , hoveredParent = e.target.parentNode;
-
-      if (hoveredParent.className === this.config.dropdown_class){
-        ul = hoveredParent.getElementsByTagName('ul')[0];
-      } else {
-        ul = hoveredParent.parentNode;
-      }
+      let ul = dropdown.getElementsByTagName('ul')[0];
 
       /* eslint-disable max-len */
       ul.setAttribute('aria-hidden', ul.offsetParent === null ? 'true' : 'false');
@@ -179,8 +170,8 @@ class ResponsiveNavigationClass{
     }
   }
 
-  _setDropdownAriaHiddenMobile(dropdownParent){
-    let ul = this._skipTextNodes(dropdownParent, 'nextSibling');
+  _setDropdownAriaHiddenMobile(dropdownToggle){
+    let ul = this._skipTextNodes(dropdownToggle, 'nextSibling');
 
     ul.setAttribute('aria-hidden', ul.offsetParent === null ? 'true' : 'false');
   }
