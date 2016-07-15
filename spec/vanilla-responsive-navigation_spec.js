@@ -409,7 +409,7 @@ describe('responsive navigation module', function(){
       });
 
       spyOn(navigation, '_addDropdownClickListener');
-      spyOn(navigation, '_skipTextNodes').and.returnValue(navigation.dropdownParents[0].children[1]);
+      spyOn(navigation, '_skipTextNodes').and.returnValue(navigation.dropdownParents[0]);
 
       navigation._getDropdownParentsMobile();
     });
@@ -531,7 +531,7 @@ describe('responsive navigation module', function(){
       });
 
       _.forEach(navigation.dropdownParents, function(dropdownParent){
-        navigation.dropdownParentsMobile.push(dropdownParent.children[1]);
+        navigation.dropdownParentsMobile.push(dropdownParent.children[0]);
       });
 
       dropdownParent = navigation.dropdownParents[0];
