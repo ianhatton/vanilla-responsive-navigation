@@ -50,10 +50,10 @@ class ResponsiveNavigationClass{
     this._setToggleAriaHidden(!this._deviceCheck());
   }
 
-  _addDropdownClickListener(dropdownParentMobile){
+  _addDropdownToggleClickListener(dropdownToggle){
     /* eslint-disable max-len */
-    dropdownParentMobile.addEventListener('click'
-                                         , this._dropdownParentMobileClick.bind(this)
+    dropdownToggle.addEventListener('click'
+                                         , this._dropdownToggleClick.bind(this)
                                          , false);
     /* eslint-enable */
   }
@@ -83,7 +83,7 @@ class ResponsiveNavigationClass{
     return (this.device === 'mobile' || this.device === 'tablet');
   }
 
-  _dropdownParentMobileClick(e){
+  _dropdownToggleClick(e){
     e.preventDefault();
 
     if (this._deviceCheck()){
@@ -119,7 +119,7 @@ class ResponsiveNavigationClass{
     }.bind(this));
 
     /* eslint-disable max-len */
-    _.forEach(this.dropdownParentsMobile, this._addDropdownClickListener.bind(this));
+    _.forEach(this.dropdownParentsMobile, this._addDropdownToggleClickListener.bind(this));
     /* eslint-enable */
   }
 
@@ -160,20 +160,20 @@ class ResponsiveNavigationClass{
     /* eslint-enable */
   }
 
-  _setDropdownAriaHiddenDesktop(dropdown, e){
+  _setDropdownAriaHiddenDesktop(dropdownParent, e){
     if (!this._deviceCheck()){
-      let ul = dropdown.getElementsByTagName('ul')[0];
+      let dropdown = dropdownParent.getElementsByTagName('ul')[0];
 
       /* eslint-disable max-len */
-      ul.setAttribute('aria-hidden', ul.offsetParent === null ? 'true' : 'false');
+      dropdown.setAttribute('aria-hidden', dropdown.offsetParent === null ? 'true' : 'false');
       /* eslint-enable */
     }
   }
 
   _setDropdownAriaHiddenMobile(dropdownToggle){
-    let ul = this._skipTextNodes(dropdownToggle, 'nextSibling');
+    let dropdown = this._skipTextNodes(dropdownToggle, 'nextSibling');
 
-    ul.setAttribute('aria-hidden', ul.offsetParent === null ? 'true' : 'false');
+    dropdown.setAttribute('aria-hidden', dropdown.offsetParent === null ? 'true' : 'false');
   }
 
   _setListClass(hidden){
@@ -210,17 +210,17 @@ class ResponsiveNavigationClass{
     this._hideNav();
   }
 
-  _toggleDropdown(dropdownParentMobile){
-    let className = dropdownParentMobile.className
-        , dropdown = this._skipTextNodes(dropdownParentMobile, 'nextSibling');
+  _toggleDropdown(dropdownToggle){
+    let className = dropdownToggle.className
+        , dropdown = this._skipTextNodes(dropdownToggle, 'nextSibling');
 
     if (dropdown.offsetParent === null){
       dropdown.style.display = 'block';
-      dropdownParentMobile.className += ' open';
+      dropdownToggle.className += ' open';
     } else {
       dropdown.style.display = 'none';
       /* eslint-disable max-len */
-      dropdownParentMobile.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
+      dropdownToggle.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
       /* eslint-enable */
     }
   }
