@@ -26,7 +26,7 @@ class ResponsiveNavigationClass{
     this._initViewport();
 
     this.dropdownParents = [];
-    this.dropdownParentsMobile = [];
+    this.dropdownToggles = [];
     this.list = document.getElementById(this.config.list_id);
     this.toggle = document.getElementById(this.config.toggle_id);
     this.toggleMobile = document.getElementById(this.config.toggle_mobile_id);
@@ -108,18 +108,18 @@ class ResponsiveNavigationClass{
 
     _.forEach(this.dropdownParents, this._addDropdownHoverListener.bind(this));
 
-    this._getDropdownParentsMobile();
+    this._getDropdownToggles();
   }
 
-  _getDropdownParentsMobile(){
+  _getDropdownToggles(){
     _.forEach(this.dropdownParents, function(dropdownParent){
       /* eslint-disable max-len */
-      this.dropdownParentsMobile.push(this._skipTextNodes(dropdownParent, 'firstChild'));
+      this.dropdownToggles.push(this._skipTextNodes(dropdownParent, 'firstChild'));
       /* eslint-enable */
     }.bind(this));
 
     /* eslint-disable max-len */
-    _.forEach(this.dropdownParentsMobile, this._addDropdownToggleClickListener.bind(this));
+    _.forEach(this.dropdownToggles, this._addDropdownToggleClickListener.bind(this));
     /* eslint-enable */
   }
 
@@ -141,7 +141,7 @@ class ResponsiveNavigationClass{
   _resetDropdownParentsStates(){
     let className;
 
-    _.forEach(this.dropdownParentsMobile, function(dropdownParent){
+    _.forEach(this.dropdownToggles, function(dropdownParent){
       className = dropdownParent.className;
 
       dropdownParent.className = className.replace(/(?:^|\s)open(?!\S)/g, '');

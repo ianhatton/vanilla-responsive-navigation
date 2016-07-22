@@ -18,7 +18,7 @@ function createList(){
   let ul;
 
   ul = document.createElement('ul');
-  ul.id = 'primary-nav-list';
+  ul.id = 'responsive-navigation-list';
 
   createListItems(ul);
 
@@ -90,21 +90,21 @@ describe('responsive navigation module', function(){
   let navContainer, navigation, viewport;
 
   beforeEach(()=>{
-    navContainer = createNav('primary-nav');
+    navContainer = createNav('responsive-navigation');
     this.list = createList();
-    this.toggle = createToggle('primary-nav-toggle', 'Toggle');
-    this.toggleMobile = createToggle('primary-nav-mobile-toggle', 'Toggle Mobile');
+    this.toggle = createToggle('responsive-navigation-toggle', 'Toggle');
+    this.toggleMobile = createToggle('responsive-navigation-mobile-toggle', 'Toggle Mobile');
 
     navContainer.appendChild(this.toggle);
     navContainer.appendChild(this.toggleMobile);
     navContainer.appendChild(this.list);
 
     navigation = new ResponsiveNavigationClass(
-      'primary-nav',
+      'responsive-navigation',
       {
-        list_id: 'primary-nav-list'
-        , toggle_id: 'primary-nav-toggle'
-        , toggle_mobile_id: 'primary-nav-mobile-toggle'
+        list_id: 'responsive-navigation-list'
+        , toggle_id: 'responsive-navigation-toggle'
+        , toggle_mobile_id: 'responsive-navigation-mobile-toggle'
       }
     );
 
@@ -112,7 +112,7 @@ describe('responsive navigation module', function(){
     this.bodyClass = setBodyClass();
 
     navigation.dropdownParents = [];
-    navigation.dropdownParentsMobile = [];
+    navigation.dropdownToggles = [];
     navigation.list = document.getElementById(navigation.config.list_id);
     navigation.toggle = document.getElementById(navigation.config.toggle_id);
     navigation.toggleMobile = document.getElementById(navigation.config.toggle_mobile_id);
@@ -139,23 +139,23 @@ describe('responsive navigation module', function(){
       expect(navigation._initViewport).toHaveBeenCalled();
     });
 
-    it('should assign an empty array to this.dropdownParents', ()=>{
+    it('should set this.dropdownParents to be an empty array', ()=>{
       expect(navigation.dropdownParents.length).toEqual(0);
     });
 
-    it('should assign an empty array to this.dropdownParentsMobile', ()=>{
-      expect(navigation.dropdownParentsMobile.length).toEqual(0);
+    it('should set this.dropdownToggles to be an empty array', ()=>{
+      expect(navigation.dropdownToggles.length).toEqual(0);
     });
 
-    it('should assign the HTML node specified in this.config.list to this.list', ()=>{
+    it('should set this.list to be the HTML node specified in this.config.list', ()=>{
       expect(navigation.list).toEqual(this.list);
     });
 
-    it('should assign the HTML node specified in this.config.toggle_id to this.toggle', ()=>{
+    it('should set this.toggle to be the HTML node specified in this.config.toggle_id', ()=>{
       expect(navigation.toggle).toEqual(this.toggle);
     });
 
-    it('should assign the HTML node specified in this.config.toggle_mobile_id to this.toggleMobile', ()=>{
+    it('should set this.toggleMobile to be the HTML node specified in this.config.toggle_mobile_id', ()=>{
       expect(navigation.toggleMobile).toEqual(this.toggleMobile);
     });
 
@@ -366,11 +366,11 @@ describe('responsive navigation module', function(){
       navigation._getBodyClass();
     });
 
-    it('should assign the document body to this.body', ()=>{
+    it('should set this.body to be the document body', ()=>{
       expect(navigation.body).toEqual(document.body);
     });
 
-    it('should assign the body class to this.bodyClass', ()=>{
+    it('should set this.bodyClass to be the document body class', ()=>{
       expect(navigation.bodyClass).toEqual(this.bodyClass);
     });
   });
@@ -378,7 +378,7 @@ describe('responsive navigation module', function(){
   describe('_getDropdownParents function', ()=>{
     beforeEach(()=>{
       spyOn(navigation, '_addDropdownHoverListener');
-      spyOn(navigation, '_getDropdownParentsMobile');
+      spyOn(navigation, '_getDropdownToggles');
 
       navigation._getDropdownParents();
     });
@@ -391,12 +391,12 @@ describe('responsive navigation module', function(){
       expect(navigation._addDropdownHoverListener).toHaveBeenCalled();
     });
 
-    it('should call the _getDropdownParentsMobile function', ()=>{
-      expect(navigation._getDropdownParentsMobile).toHaveBeenCalled();
+    it('should call the _getDropdownToggles function', ()=>{
+      expect(navigation._getDropdownToggles).toHaveBeenCalled();
     });
   });
 
-  describe('_getDropdownParentsMobile function', ()=>{
+  describe('_getDropdownToggles function', ()=>{
     let listItems;
 
     beforeEach(()=>{
@@ -411,11 +411,11 @@ describe('responsive navigation module', function(){
       spyOn(navigation, '_addDropdownToggleClickListener');
       spyOn(navigation, '_skipTextNodes').and.returnValue(navigation.dropdownParents[0]);
 
-      navigation._getDropdownParentsMobile();
+      navigation._getDropdownToggles();
     });
 
-    it('should push dropdown parents to the dropdownParentsMobile array', ()=>{
-      expect(navigation.dropdownParentsMobile.length).toEqual(1);
+    it('should push dropdown parents to the dropdownToggles array', ()=>{
+      expect(navigation.dropdownToggles.length).toEqual(1);
     });
   });
 
@@ -444,7 +444,7 @@ describe('responsive navigation module', function(){
         navigation._hideNav(true);
       });
 
-      it('should assign the value of the parameter to this.hideMenu', ()=>{
+      it('should set this.hideMenu to be the value of the parameter', ()=>{
         expect(navigation.hideMenu).toEqual(true);
       });
     });
@@ -531,7 +531,7 @@ describe('responsive navigation module', function(){
       });
 
       _.forEach(navigation.dropdownParents, function(dropdownParent){
-        navigation.dropdownParentsMobile.push(dropdownParent.children[0]);
+        navigation.dropdownToggles.push(dropdownParent.children[0]);
       });
 
       dropdownParent = navigation.dropdownParents[0];
@@ -539,13 +539,13 @@ describe('responsive navigation module', function(){
       dropdownParentUl.style.display = 'block';
       dropdownParentUl.setAttribute('aria-hidden', 'false');
 
-      dropdownParentMobile = navigation.dropdownParentsMobile[0];
+      dropdownParentMobile = navigation.dropdownToggles[0];
       dropdownParentMobile.className = 'open';
 
       navigation._resetDropdownParentsStates();
     });
 
-    it('should remove the "open" class from each item in this.dropdownParentsMobile', ()=>{
+    it('should remove the "open" class from each item in this.dropdownToggles', ()=>{
       expect(dropdownParentMobile.className).not.toContain('open');
     });
 
@@ -566,7 +566,7 @@ describe('responsive navigation module', function(){
         navigation._setBodyClass(false);
       });
 
-      it('should assign "nav-open" to this.bodyClass', ()=>{
+      it('should add the "nav-open" class to this.bodyClass', ()=>{
         expect(navigation.body.className).toContain('nav-open');
       });
     });
@@ -576,7 +576,7 @@ describe('responsive navigation module', function(){
         navigation._setBodyClass(true);
       });
 
-      it('should not assign "nav-open" to this.bodyClass', ()=>{
+      it('should not add the "nav-open" class to this.bodyClass', ()=>{
         expect(navigation.body.className).not.toContain('nav-open');
       });
     });
@@ -776,7 +776,7 @@ describe('responsive navigation module', function(){
     });
   });
 
-  fdescribe('_toggleDropdown function', ()=>{
+  describe('_toggleDropdown function', ()=>{
     let dropdown, dropdownParent, dropdownToggle, listItems;
 
     beforeEach(()=>{
@@ -789,85 +789,111 @@ describe('responsive navigation module', function(){
       });
 
       _.forEach(navigation.dropdownParents, function(dropdownParent){
-        navigation.dropdownParentsMobile.push(dropdownParent.children[0]);
+        navigation.dropdownToggles.push(dropdownParent.children[0]);
       });
 
       dropdownParent = navigation.dropdownParents[0];
       dropdown = dropdownParent.getElementsByTagName('ul')[0];
-      dropdownToggle = navigation.dropdownParentsMobile[0];
+      dropdownToggle = navigation.dropdownToggles[0];
     });
 
     describe('when the offsetParent property of the dropdown returns null', ()=>{
       beforeEach(()=>{
         dropdownParent.style.display = 'none';
-        dropdown.setAttribute('aria-hidden', 'false');
 
         navigation._toggleDropdown(dropdownToggle);
+      });
+
+      it('should set the display property of the dropdown to be "block"', ()=>{
+        expect(dropdown.style.display).toEqual('block');
       });
 
       it('should add the "open" class to the dropdownToggle', ()=>{
         expect(dropdownToggle.className).toContain('open');
       });
     });
+
+    describe('when the offsetParent property of the dropdown returns something other than null', ()=>{
+      beforeEach(()=>{
+        dropdownParent.style.display = 'block';
+
+        navigation._toggleDropdown(dropdownToggle);
+      });
+
+      it('should set the display property of the dropdown to be "none"', ()=>{
+        expect(dropdown.style.display).toEqual('none');
+      });
+
+      it('should remove the "open" class from the dropdownToggle', ()=>{
+        expect(dropdownToggle.className).not.toContain('open');
+      });
+    });
   });
 
-  describe("trackSize function", ()=>{
+  describe('_trackSize function', ()=>{
     beforeEach(()=>{
-      spyOn(navigation, "hideNav");
-      spyOn(navigation, "resetDropdownParentsStates");
-      spyOn(navigation, "setToggleAriaHidden");
+      spyOn(navigation, '_hideNav');
+      spyOn(navigation, '_setToggleAriaHidden');
     });
 
-    it("should call the resetDropdownParentsStates function", ()=>{
-      navigation.trackSize("desktop", {height: 568, width: 1680});
-
-      expect(navigation.resetDropdownParentsStates).toHaveBeenCalled();
-    });
-
-    it("should assign the value of the device parameter to this.device if they are not strictly equal", ()=>{
-      navigation.device = "mobile";
-
-      navigation.trackSize("desktop", {height: 568, width: 1680});
-
-      expect(navigation.device).toEqual("desktop");
-    });
-
-    describe("when the deviceCheck function returns true", ()=>{
+    describe('under all circumstances', ()=>{
       beforeEach(()=>{
-        spyOn(navigation, "deviceCheck").and.returnValue(true);
+        spyOn(navigation, '_resetDropdownParentsStates');
 
-        navigation.trackSize("desktop", {height: 568, width: 1680});
+        navigation._trackSize('desktop', {height: 568, width: 1680});
       });
 
-      it("should call the hideNav function with a parameter of true", ()=>{
-        expect(navigation.hideNav).toHaveBeenCalledWith(true);
+      it('should call the _resetDropdownParentsStates function', ()=>{
+        expect(navigation._resetDropdownParentsStates).toHaveBeenCalled();
       });
 
-      it("should call the setToggleAriaHidden function with a parameter of false", ()=>{
-        expect(navigation.setToggleAriaHidden).toHaveBeenCalledWith(false);
+      it('should set this.size to be the value of the size parameter', ()=>{
+        expect(navigation.size).toEqual({height: 568, width: 1680});
       });
     });
 
-    describe("when the deviceCheck function returns false", ()=>{
+    describe('when this.device is not strictly equal to the device parameter', ()=>{
       beforeEach(()=>{
-        spyOn(navigation, "deviceCheck").and.returnValue(false);
+        navigation.device = 'mobile';
 
-        navigation.trackSize("desktop", {height: 568, width: 1680});
+        navigation._trackSize('desktop', {height: 568, width: 1680});
       });
 
-      it("should call the hideNav function with a parameter of false", ()=>{
-        expect(navigation.hideNav).toHaveBeenCalledWith(false);
-      });
-
-      it("should call the setToggleAriaHidden function with a parameter of true", ()=>{
-        expect(navigation.setToggleAriaHidden).toHaveBeenCalledWith(true);
+      it('should set this.device to be the value of the device parameter', ()=>{
+        expect(navigation.device).toEqual('desktop');
       });
     });
 
-    it("should assign the value of the size parameter to this.size", ()=>{
-      navigation.trackSize("desktop", {height: 568, width: 1680});
+    describe('when the _deviceCheck function returns true', ()=>{
+      beforeEach(()=>{
+        spyOn(navigation, '_deviceCheck').and.returnValue(true);
 
-      expect(navigation.size).toEqual({height: 568, width: 1680});
+        navigation._trackSize('desktop', {height: 568, width: 1680});
+      });
+
+      it('should call the _hideNav function with a parameter of true', ()=>{
+        expect(navigation._hideNav).toHaveBeenCalledWith(true);
+      });
+
+      it('should call the _setToggleAriaHidden function with a parameter of false', ()=>{
+        expect(navigation._setToggleAriaHidden).toHaveBeenCalledWith(false);
+      });
+    });
+
+    describe('when the _deviceCheck function returns false', ()=>{
+      beforeEach(()=>{
+        spyOn(navigation, '_deviceCheck').and.returnValue(false);
+
+        navigation._trackSize('desktop', {height: 568, width: 1680});
+      });
+
+      it('should call the _hideNav function with a parameter of false', ()=>{
+        expect(navigation._hideNav).toHaveBeenCalledWith(false);
+      });
+
+      it('should call the _setToggleAriaHidden function with a parameter of true', ()=>{
+        expect(navigation._setToggleAriaHidden).toHaveBeenCalledWith(true);
+      });
     });
   });
 });
