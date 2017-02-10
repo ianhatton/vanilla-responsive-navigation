@@ -17,7 +17,7 @@ class ResponsiveNavigationClass{
       , flyout: false
       , list_id: 'responsive-navigation-list'
       , toggle_id: 'responsive-navigation-toggle'
-      , toggle_mobile_id: 'responsive-navigation-toggle-mobile'
+      , toggle_mobile_id: null
       }
     );
   }
