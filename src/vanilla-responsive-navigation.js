@@ -1,9 +1,9 @@
+/* eslint-disable max-len, one-var */
+
 const _ = require('lodash/core')
       , ViewportDetect = require('viewport-detection-es6');
 _.isElement = require('lodash/isElement');
-/* eslint-disable one-var */
 const viewport = new ViewportDetect();
-/* eslint-enable */
 
 class ResponsiveNavigationClass{
   constructor(id, config = {}){
@@ -24,7 +24,6 @@ class ResponsiveNavigationClass{
 
   _init(){
     this._initViewport();
-
     this.dropdownParents = [];
     this.dropdownToggles = [];
     this.list = document.getElementById(this.config.list_id);
@@ -50,14 +49,6 @@ class ResponsiveNavigationClass{
     this._setToggleAriaHidden(!this._deviceCheck());
   }
 
-  _addDropdownToggleClickListener(dropdownToggle){
-    /* eslint-disable max-len */
-    dropdownToggle.addEventListener('click'
-                                         , this._dropdownToggleClick.bind(this)
-                                         , false);
-    /* eslint-enable */
-  }
-
   _addDropdownHoverListener(dropdown){
     dropdown.addEventListener('mouseover'
                              , this._setDropdownAriaHiddenDesktop.bind(this, dropdown)
@@ -65,6 +56,12 @@ class ResponsiveNavigationClass{
     dropdown.addEventListener('mouseout'
                              , this._setDropdownAriaHiddenDesktop.bind(this, dropdown)
                              , false);
+  }
+
+  _addDropdownToggleClickListener(dropdownToggle){
+    dropdownToggle.addEventListener('click'
+                                         , this._dropdownToggleClick.bind(this)
+                                         , false);
   }
 
   _addToggleListener(){
@@ -100,34 +97,28 @@ class ResponsiveNavigationClass{
   _getDropdownParents(){
     let listItems = this.list.getElementsByTagName('li');
 
-    _.forEach(listItems, function(li){
-      if (li.className === this.config.dropdown_class){
-        this.dropdownParents.push(li);
-      }
-    }.bind(this));
+    this.dropdownParents = Array.from(listItems).filter((li)=>{
+      return li.className === this.config.dropdown_class;
+    });
 
-    _.forEach(this.dropdownParents, this._addDropdownHoverListener.bind(this));
+    this.dropdownParents.forEach(this._addDropdownHoverListener.bind(this));
 
     this._getDropdownToggles();
   }
 
   _getDropdownToggles(){
-    _.forEach(this.dropdownParents, function(dropdownParent){
-      /* eslint-disable max-len */
-      this.dropdownToggles.push(this._skipTextNodes(dropdownParent, 'firstChild'));
-      /* eslint-enable */
-    }.bind(this));
+    this.dropdownToggles = this.dropdownParents.map((dropdownParent)=>{
+      return this._skipTextNodes(dropdownParent, 'firstChild');
+    });
 
-    /* eslint-disable max-len */
-    _.forEach(this.dropdownToggles, this._addDropdownToggleClickListener.bind(this));
-    /* eslint-enable */
+    this.dropdownToggles.forEach(this._addDropdownToggleClickListener.bind(this));
   }
 
   _hideNav(force){
     if (_.isBoolean(force)){
       this.hideMenu = force;
     } else {
-      this.hideMenu = (this._deviceCheck()) ? !this.hideMenu : false;
+      this.hideMenu = this._deviceCheck() ? !this.hideMenu : false;
     }
 
     if (this.config.flyout){
@@ -139,34 +130,30 @@ class ResponsiveNavigationClass{
   }
 
   _resetDropdownParentsStates(){
-    let className;
+    let className, ul;
 
-    _.forEach(this.dropdownToggles, function(dropdownParent){
-      className = dropdownParent.className;
+    this.dropdownToggles.forEach((dropdownToggle)=>{
+      className = dropdownToggle.className;
 
-      dropdownParent.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
+      dropdownToggle.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
     });
 
-    _.forEach(this.dropdownParents, function(dropdownParent){
-      let ul = dropdownParent.getElementsByTagName('ul')[0];
+    this.dropdownParents.forEach((dropdownParent)=>{
+      ul = dropdownParent.getElementsByTagName('ul')[0];
       ul.style.display = 'none';
       ul.setAttribute('aria-hidden', 'true');
     });
   }
 
   _setBodyClass(hidden){
-    /* eslint-disable max-len */
-    this.body.className = hidden ? this.bodyClass : this.bodyClass + ' nav-open';
-    /* eslint-enable */
+    this.body.className = hidden ? this.bodyClass : `${this.bodyClass} nav-open`;
   }
 
   _setDropdownAriaHiddenDesktop(dropdownParent, e){
     if (!this._deviceCheck()){
       let dropdown = dropdownParent.getElementsByTagName('ul')[0];
 
-      /* eslint-disable max-len */
       dropdown.setAttribute('aria-hidden', dropdown.offsetParent === null ? 'true' : 'false');
-      /* eslint-enable */
     }
   }
 
@@ -219,9 +206,7 @@ class ResponsiveNavigationClass{
       dropdownToggle.className += ' open';
     } else {
       dropdown.style.display = 'none';
-      /* eslint-disable max-len */
       dropdownToggle.className = className.replace(/(?:^|\s)open(?!\S)/g, '');
-      /* eslint-enable */
     }
   }
 
@@ -245,3 +230,4 @@ class ResponsiveNavigationClass{
 }
 
 module.exports = ResponsiveNavigationClass;
+/* eslint-enable */
