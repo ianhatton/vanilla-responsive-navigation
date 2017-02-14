@@ -1,5 +1,4 @@
-/* eslint-disable max-len, one-var */
-
+/* eslint-disable max-len */
 const _ = require('lodash/core')
       , ViewportDetect = require('viewport-detection-es6');
 _.isElement = require('lodash/isElement');
